@@ -2,9 +2,11 @@
 import { Chatbot } from "./components/Chatbot";
 import { HomePage } from "./pages/HomePage";
 import { ModelDetail } from "./pages/ModelDetail";
-
 import { Configurator } from "./pages/Configurator";
 import { Confirmation } from "./pages/Confirmation";
+import { Checkout } from "./pages/Checkout";
+import { OrderSuccess } from "./pages/OrderSuccess";
+import { Studio3D } from "./pages/Studio3D";
 
 function App() {
   return (
@@ -14,6 +16,9 @@ function App() {
         <Route path="/model/:id" element={<ModelDetail />} />
         <Route path="/configurator/:id" element={<Configurator />} />
         <Route path="/confirmation" element={<Confirmation />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/studio-3d/:id" element={<Studio3D />} />
       </Routes>
       <Chatbot />
     </Router>

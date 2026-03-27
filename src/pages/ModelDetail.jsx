@@ -115,6 +115,13 @@ export function ModelDetail() {
               >
                 Customize this model
               </button>
+              <button
+                onClick={() => navigate('/studio-3d/' + model.id)}
+                className="button dark"
+                style={{ width: '100%', padding: '18px', marginBottom: '16px', cursor: 'pointer', borderStyle: 'dashed' }}
+              >
+                Open 3D layout and colour studio
+              </button>
               <Link 
                 to="/#contact"
                 className="button"
