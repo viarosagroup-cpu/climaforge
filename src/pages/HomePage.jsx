@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
-import { Model3DPreview } from '../components/Model3DPreview';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
@@ -241,17 +240,13 @@ export function HomePage() {
                 }}
                 whileTap={{ scale: 0.98 }}
               >
-                {index === 0 && selectedModel === 'veranda' ? (
-                  <Model3DPreview modelName={model.name} />
-                ) : (
-                  <motion.img 
+                <motion.img 
                     src={model.img} 
                     alt={model.name} 
                     className="card-image"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
                   />
-                )}
                 <div className="card-body">
                   <h3>{model.name}</h3>
                   <p>{model.desc}</p>

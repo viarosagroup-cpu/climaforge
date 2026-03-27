@@ -60,7 +60,7 @@ function getFallbackReply(input) {
   }
 
   if (text.includes('layout') || text.includes('colour') || text.includes('color')) {
-    return 'Use the 3D Studio from any model page to choose layout and colours, then submit your design for review.';
+    return 'Contact our team to discuss layout and colour options for your chosen model.';
   }
 
   return 'I can help with model recommendations, pricing, upgrades, and deposit steps. Tell me your budget and preferred bedrooms and I will suggest the best fit.';
