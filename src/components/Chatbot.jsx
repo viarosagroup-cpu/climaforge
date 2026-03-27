@@ -3,10 +3,13 @@ import OpenAI from 'openai';
 
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
-const openai = new OpenAI({
-  apiKey: OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+function createOpenAIClient() {
+  if (!OPENAI_API_KEY) return null;
+  return new OpenAI({
+    apiKey: OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true,
+  });
+}
 
 const SYSTEM_PROMPT = `You are the ClimaForge AI Advisor — an expert consultant for premium modular homes in Australia.
 
@@ -95,6 +98,10 @@ export function Chatbot() {
     }
 
     try {
+      const openai = createOpenAIClient();
+      if (!openai) {
+        throw new Error('Missing OpenAI key');
+      }
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
