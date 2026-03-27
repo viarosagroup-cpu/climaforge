@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Box, Text } from '@react-three/drei';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 const LAYOUTS = {
   default: {
@@ -36,6 +37,25 @@ export function Model3DPreview({
   accentColor = '#654321',
 }) {
   const selected = LAYOUTS[layout] || LAYOUTS.default;
+  const [isMobile, setIsMobile] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth <= 768);
+    update();
+    const ua = window.navigator.userAgent || '';
+    setIsIOS(/iPhone|iPad|iPod/i.test(ua));
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  const camera = isIOS
+    ? { position: [5.8, 3.6, 5.8], fov: 62 }
+    : isMobile
+      ? { position: [4.5, 4, 4.5], fov: 56 }
+      : { position: [5, 5, 5], fov: 50 };
+
+  const groupScale = isIOS ? 0.92 : 1;
 
   return (
     <motion.div
@@ -43,14 +63,30 @@ export function Model3DPreview({
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8 }}
+      style={{ touchAction: 'none' }}
     >
-      <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
+      <Canvas
+        camera={camera}
+        dpr={isIOS ? 1 : [1, 1.5]}
+        gl={{ antialias: !isIOS, powerPreference: isIOS ? 'low-power' : 'high-performance' }}
+      >
         <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
-        <OrbitControls enableZoom={true} enablePan={false} />
+        <directionalLight position={[10, 10, 5]} intensity={isIOS ? 0.9 : 1} />
+        <directionalLight position={[-6, 6, -2]} intensity={isIOS ? 0.35 : 0.25} />
+        <OrbitControls
+          enableZoom={false}
+          enablePan={false}
+          enableDamping={!isIOS}
+          dampingFactor={0.08}
+          rotateSpeed={isIOS ? 0.5 : isMobile ? 0.6 : 1}
+          minPolarAngle={0.8}
+          maxPolarAngle={1.45}
+          minDistance={5}
+          maxDistance={9}
+        />
 
         {/* Simple house representation */}
-        <group>
+        <group scale={groupScale} position={[0, isIOS ? -0.08 : 0, 0]}>
           {/* Base/foundation */}
           <Box args={[4, 0.2, 3]} position={[0, -0.1, 0]}>
             <meshStandardMaterial color="#8B7355" />
@@ -91,15 +127,17 @@ export function Model3DPreview({
           </Box>
         </group>
 
-        <Text
-          position={[0, -2, 0]}
-          fontSize={0.5}
-          color="#1c1c1c"
-          anchorX="center"
-          anchorY="middle"
-        >
-          {modelName} - {layout} layout
-        </Text>
+        {!isMobile && (
+          <Text
+            position={[0, -2, 0]}
+            fontSize={0.5}
+            color="#1c1c1c"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {modelName} - {layout} layout
+          </Text>
+        )}
       </Canvas>
     </motion.div>
   );

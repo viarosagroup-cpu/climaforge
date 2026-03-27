@@ -104,7 +104,7 @@ export function Studio3D() {
       </section>
 
       <section style={{ padding: '36px 20px 70px' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '28px' }}>
+        <div className="container studio-grid" style={{ display: 'grid', gap: '28px' }}>
           <div>
             <Model3DPreview
               modelName={selectedModel.name}

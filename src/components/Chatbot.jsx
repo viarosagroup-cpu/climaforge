@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import OpenAI from 'openai';
 
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
+
 const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  apiKey: OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
@@ -38,6 +40,32 @@ const QUICK_PROMPTS = [
   "What upgrades do you recommend?",
 ];
 
+function getFallbackReply(input) {
+  const text = input.toLowerCase();
+
+  if (text.includes('45') || text.includes('budget')) {
+    return 'With a $45K budget, The Haven ($42,500) is the best full-feature option, and The Veranda ($39,900) leaves room for upgrades like Smart Home or Premium Appliances.';
+  }
+
+  if (text.includes('popular') || text.includes('best seller')) {
+    return 'Our most popular model is The Veranda from $39,900. It balances layout, curb appeal, and practical living space.';
+  }
+
+  if (text.includes('deposit') || text.includes('payment')) {
+    return 'Payment is 30% upfront to secure your build slot, with the remaining 70% due before delivery.';
+  }
+
+  if (text.includes('upgrade') || text.includes('solar') || text.includes('smart')) {
+    return 'Top upgrades are Solar Panels (+$4,500), Smart Home (+$3,200), and Ducted A/C (+$3,800). These usually add the most long-term value.';
+  }
+
+  if (text.includes('layout') || text.includes('colour') || text.includes('color')) {
+    return 'Use the 3D Studio from any model page to choose layout and colours, then submit your design for review.';
+  }
+
+  return 'I can help with model recommendations, pricing, upgrades, and deposit steps. Tell me your budget and preferred bedrooms and I will suggest the best fit.';
+}
+
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -57,6 +85,15 @@ export function Chatbot() {
     setMessages((prev) => [...prev, { text: msg, isBot: false }]);
     setInput('');
     setIsTyping(true);
+
+    if (!OPENAI_API_KEY) {
+      setTimeout(() => {
+        setMessages((prev) => [...prev, { text: getFallbackReply(msg), isBot: true }]);
+        setIsTyping(false);
+      }, 350);
+      return;
+    }
+
     try {
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
@@ -70,7 +107,7 @@ export function Chatbot() {
       const reply = completion.choices[0].message.content;
       setMessages((prev) => [...prev, { text: reply, isBot: true }]);
     } catch {
-      setMessages((prev) => [...prev, { text: "Sorry, I'm having trouble connecting right now. Call us on 1800 CLIMAFORGE or use the contact form.", isBot: true }]);
+      setMessages((prev) => [...prev, { text: `${getFallbackReply(msg)} If you want a tailored quote now, submit the contact form and our team will follow up.`, isBot: true }]);
     } finally {
       setIsTyping(false);
     }
