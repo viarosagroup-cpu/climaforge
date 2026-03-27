@@ -17,6 +17,7 @@ function App() {
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="*" element={<HomePage />} />
       </Routes>
       <Chatbot />
     </Router>

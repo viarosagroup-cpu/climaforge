@@ -105,7 +105,6 @@ const testimonials = [
 ];
 
 export function HomePage() {
-  const [selectedModel, setSelectedModel] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '', model: '', message: '' });
 
   const handleFormChange = (e) => {
@@ -265,17 +264,6 @@ export function HomePage() {
                     >
                       Enquire about this model
                     </motion.a>
-                    {index === 0 && (
-                      <motion.button
-                        onClick={() => setSelectedModel(selectedModel === 'veranda' ? null : 'veranda')}
-                        className="text-link"
-                        style={{ border: 'none', background: 'none', cursor: 'pointer' }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        {selectedModel === 'veranda' ? 'View Photo' : '3D Preview'}
-                      </motion.button>
-                    )}
                   </div>
                 </div>
               </motion.article>
